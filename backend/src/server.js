@@ -50,7 +50,9 @@ app.get('/health', (req, res) => {
 const setupDatabase = require('./scripts/setupDatabase');
 
 // Start Server
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  await setupDatabase();
+  setupDatabase().catch((err) => {
+    console.error('Background database setup notice:', err.message);
+  });
 });
