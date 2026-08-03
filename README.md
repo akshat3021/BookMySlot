@@ -4,6 +4,21 @@ BookMySlot is a full-stack service booking and scheduling management platform fe
 
 ---
 
+## 🌐 Live Production Links
+
+* 🚀 **Live Web Application**: [https://book-my-slot-mu.vercel.app](https://book-my-slot-mu.vercel.app)
+* ⚙️ **Live Backend API**: [https://bookmyslot-production.up.railway.app](https://bookmyslot-production.up.railway.app)
+* 📦 **GitHub Repository**: [https://github.com/akshat3021/BookMySlot.git](https://github.com/akshat3021/BookMySlot.git)
+
+### 🔑 Live Demo Credentials
+
+| Role | Email / Login ID | Password | Access & Features |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@bookmyslot.com` | `secureadminpass` | Full Admin Dashboard, Manage Services, Create/Delete Slots, View Analytics |
+| **Customer** | `jane.miller@outlook.com` | `password123` | Service Explorer, Slot Reservations, Stripe Checkout, Reschedule & Cancel |
+
+---
+
 ## Tech Stack
 
 *   **Frontend**: React (Vite), Vanilla CSS (Custom Design System with responsive media queries), Recharts (Analytics Data Visualization).
