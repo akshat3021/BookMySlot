@@ -99,15 +99,6 @@ function App() {
 
   const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-  // Read Stripe callback redirection parameters
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const bookingId = params.get('booking_id');
-    if (params.get('payment') === 'success' && bookingId) {
-      setPaymentSuccessMsg('Payment succeeded! Your slot booking is now confirmed.');
-      setCurrentView('confirmation');
-      setLoadingConfirmed(true);
-      
   // Cold-start & slow request detector state (~3 seconds timeout)
   const [isSlowResponse, setIsSlowResponse] = useState(false);
   const activeRequestsRef = useRef(0);
@@ -142,6 +133,38 @@ function App() {
       endRequestTracking();
     }
   };
+
+  // Read Stripe callback redirection parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const bookingId = params.get('booking_id');
+    if (params.get('payment') === 'success' && bookingId) {
+      setPaymentSuccessMsg('Payment succeeded! Your slot booking is now confirmed.');
+      setCurrentView('confirmation');
+      setLoadingConfirmed(true);
+      
+      // Fetch details of the newly paid booking
+      const storedToken = localStorage.getItem('token') || token;
+      trackedFetch(`${BACKEND_URL}/api/bookings/${bookingId}`, {
+        headers: { 'Authorization': `Bearer ${storedToken}` }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setConfirmedBooking(data);
+          setLoadingConfirmed(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoadingConfirmed(false);
+        });
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (params.get('payment') === 'cancel') {
+      setPaymentCancelMsg('Payment checkout was cancelled. You can retry paying from your dashboard.');
+      setCurrentView('dashboard');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [token]);
 
   // Central fetch wrapper to capture 401 Unauthorized token expirations
   const apiFetch = async (path, options = {}) => {
@@ -1829,7 +1852,7 @@ function App() {
         <p>&copy; 2026 BookMySlot. All rights reserved.</p>
       </footer>
     </div>
-  )
+  );
 }
 
 export default App;
