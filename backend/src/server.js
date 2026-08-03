@@ -6,9 +6,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+const configuredOrigin = (process.env.FRONTEND_URL || 'http://localhost:3000').trim().replace(/\/$/, '');
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    if (!origin || origin.replace(/\/$/, '') === configuredOrigin) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true
 }));
 
