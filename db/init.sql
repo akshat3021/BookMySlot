@@ -1,7 +1,7 @@
 -- Requires PostgreSQL 13+ (for built-in gen_random_uuid() support)
 
 -- 1. Users Table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 -- 2. Services Table
-CREATE TABLE services (
+CREATE TABLE IF NOT EXISTS services (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -23,7 +23,7 @@ CREATE TABLE services (
 );
 
 -- 3. Availability Slots Table
-CREATE TABLE availability_slots (
+CREATE TABLE IF NOT EXISTS availability_slots (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     service_id UUID NOT NULL REFERENCES services(id) ON DELETE CASCADE,
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE availability_slots (
 );
 
 -- 4. Bookings Table
-CREATE TABLE bookings (
+CREATE TABLE IF NOT EXISTS bookings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     customer_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     service_id UUID NOT NULL REFERENCES services(id) ON DELETE RESTRICT,
@@ -43,7 +43,7 @@ CREATE TABLE bookings (
 );
 
 -- 5. Payments Table
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     booking_id UUID NOT NULL UNIQUE REFERENCES bookings(id) ON DELETE RESTRICT,
     stripe_payment_intent_id VARCHAR(255) UNIQUE NOT NULL,
@@ -53,5 +53,5 @@ CREATE TABLE payments (
 );
 
 -- Indexes for common query patterns and performance
-CREATE INDEX idx_availability_slots_service_time ON availability_slots(service_id, start_time);
-CREATE INDEX idx_bookings_customer_id ON bookings(customer_id);
+CREATE INDEX IF NOT EXISTS idx_availability_slots_service_time ON availability_slots(service_id, start_time);
+CREATE INDEX IF NOT EXISTS idx_bookings_customer_id ON bookings(customer_id);

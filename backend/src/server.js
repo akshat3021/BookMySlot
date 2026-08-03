@@ -41,7 +41,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'BookMySlot API' });
 });
 
+const setupDatabase = require('./scripts/setupDatabase');
+
 // Start Server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+  await setupDatabase();
 });
