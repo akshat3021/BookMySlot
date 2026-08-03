@@ -196,6 +196,13 @@ function App() {
     }
   };
 
+  // Admin route guard: Redirect admin users away from customer dashboard
+  useEffect(() => {
+    if (currentView === 'dashboard' && user && user.role === 'admin') {
+      setCurrentView('admin-dashboard');
+    }
+  }, [currentView, user]);
+
   // Fetch active services
   const fetchServices = () => {
     setLoadingServices(true);
@@ -632,6 +639,8 @@ function App() {
           fetchSlotsForService(redirectAfterLoginService);
           setRedirectAfterLoginService(null);
           setCurrentView('slot-picker');
+        } else if (data.user && data.user.role === 'admin') {
+          setCurrentView('admin-dashboard');
         } else {
           setCurrentView('dashboard');
         }
@@ -845,7 +854,7 @@ function App() {
             <li className={`nav-item ${currentView === 'services' ? 'active' : ''}`} onClick={() => setCurrentView('services')}>Services</li>
             <li className={`nav-item ${currentView === 'about' ? 'active' : ''}`} onClick={() => setCurrentView('about')}>About</li>
             <li className={`nav-item ${currentView === 'contact' ? 'active' : ''}`} onClick={() => setCurrentView('contact')}>Contact</li>
-            {token && (
+            {token && user && user.role !== 'admin' && (
               <li className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`} onClick={() => setCurrentView('dashboard')}>Dashboard</li>
             )}
             {token && user && user.role === 'admin' && (
@@ -1142,7 +1151,7 @@ function App() {
         )}
 
         {/* 5. Customer Dashboard Booking History View */}
-        {currentView === 'dashboard' && (
+        {currentView === 'dashboard' && user && user.role !== 'admin' && (
           <div>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Your Dashboard</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '3rem' }}>
