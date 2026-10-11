@@ -3,7 +3,9 @@ const { Pool } = require('pg');
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     })
   : new Pool({
       user: process.env.DB_USER,
@@ -11,6 +13,7 @@ const pool = process.env.DATABASE_URL
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       port: process.env.DB_PORT || 5432,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     });
 
 module.exports = {
