@@ -80,8 +80,9 @@ const getSlots = async (req, res) => {
 
     // Status filtering based on role
     if (!isAdmin) {
-      // Force public to only see available slots
+      // Force public to only see available slots that are in the future
       query += ` AND status = 'available'`;
+      query += ` AND start_time > NOW()`;
     } else if (status) {
       query += ` AND status = $${paramIndex++}`;
       values.push(status);
